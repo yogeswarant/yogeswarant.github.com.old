@@ -3,9 +3,9 @@
 # ----------------------- #
 
 url: http://yogeswarant.github.io
-title: My Octopress Blog
-subtitle: A blogging framework for hackers.
-author: Your Name
+title: Yogi's Corner 
+subtitle: random(yogi)
+author: Yogeswaran Thulasidoss
 simple_search: https://www.google.com/search
 description:
 
@@ -64,13 +64,13 @@ default_asides: [asides/recent_posts.html, asides/github.html, asides/delicious.
 # ----------------------- #
 
 # Github repositories
-github_user:
+github_user: yogeswarant
 github_repo_count: 0
 github_show_profile_link: true
 github_skip_forks: true
 
 # Twitter
-twitter_user:
+twitter_user: yogeswarant
 twitter_tweet_button: true
 
 # Google +1
@@ -87,7 +87,7 @@ pinboard_user:
 pinboard_count: 3
 
 # Delicious
-delicious_user:
+delicious_user: yogeswarant
 delicious_count: 3
 
 # Disqus Comments
@@ -98,4 +98,4 @@ disqus_show_comment_count: false
 google_analytics_tracking_id:
 
 # Facebook Like
-facebook_like: false
+facebook_like: true
