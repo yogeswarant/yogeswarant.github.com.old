@@ -1,26 +1,382 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[My Octopress Blog]]></title>
+  <title><![CDATA[Yogi's Corner]]></title>
   <link href="http://yogeswarant.github.io/atom.xml" rel="self"/>
   <link href="http://yogeswarant.github.io/"/>
-  <updated>2014-07-05T22:31:52+05:30</updated>
+  <updated>2014-07-25T09:14:15+05:30</updated>
   <id>http://yogeswarant.github.io/</id>
   <author>
-    <name><![CDATA[Your Name]]></name>
+    <name><![CDATA[Yogeswaran Thulasidoss]]></name>
     
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
   
   <entry>
-    <title type="html"><![CDATA[Gcov Know How]]></title>
-    <link href="http://yogeswarant.github.io/blog/2014/07/05/gcov-know-how/"/>
-    <updated>2014-07-05T00:00:00+05:30</updated>
-    <id>http://yogeswarant.github.io/blog/2014/07/05/gcov-know-how</id>
-    <content type="html"><![CDATA[<h1>GCOV &ndash; Code coverage testing tool</h1>
+    <title type="html"><![CDATA[Generators in Python]]></title>
+    <link href="http://yogeswarant.github.io/blog/2014/07/25/generators-in-python/"/>
+    <updated>2014-07-25T08:55:49+05:30</updated>
+    <id>http://yogeswarant.github.io/blog/2014/07/25/generators-in-python</id>
+    <content type="html"><![CDATA[<p>One of the few obscure feature of python (for the beginners) is <strong>Generators</strong>.  In this post I would like to share few naive questions I had about generators and the answers I got after understanding them.</p>
 
-<h2>What is GCOV</h2>
+<blockquote><p>Question 1: Are generators something like static variables in C?  Say, generateFibonacciNumber() is a generator.   First time I call generateFibonacciNumber() and iterate upto value 5, the next time I call  generateFibonacciNumber() will it start returning from value 8 when iterated?</p></blockquote>
+
+<p>This could sound like most dumb question on earth, but honestly I had this question having come from C background.</p>
+
+<p>Answer:  No. Generators should not be confused with static variables in C.  Every time a generator is called it will return a generator object and each has their own state variables.  So iterating one generator will not affect the other.</p>
+
+<blockquote><p>Question 2: Creating multiple generators holding their reference and not iterating through them could potentially lead to memory exhaustion, correct?</p></blockquote>
+
+<p>Phew.  Yet another dumb question.</p>
+
+<p>Answer: Obviously if you are going to hold the reference it is going to eat memory.  But, that is not the problem of generators.  Let&rsquo;s take for example, to process a million lines of code we use a <em>generator</em> and a <em>normal function</em>.  At any point of time single generator object will hold only state variables and not the memory needed to hold all million lines.  But holding the value returned by a normal function is like holding million lines in the memory.  Compare holding multiple instances of state variables and multiple instance of million lines &ndash; the answer is obvious.</p>
+
+<h3>So, what is actually is a Generator?</h3>
+
+<p>To understand generator we&rsquo;ll have to understand what is <strong>iterator</strong> in python.</p>
+
+<p>In simple terms, <strong>iterator</strong> is a object having two methods <code>__iter__()</code> and <code>next()</code>.  When iterators are using along with looping constructs like <code>for</code>, the <code>__iter__</code> and <code>next</code> methods are called implicitly.
+You can find more information on iterators <a href="https://docs.python.org/2/library/stdtypes.html#iterator-types">here</a>.</p>
+
+<blockquote><p>__iter__() : Returing itself</p>
+
+<p>next()  : Returning next item, or <strong>StopIteration</strong> exception on no further items.</p></blockquote>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">class</span> <span class="nc">Iterator</span><span class="p">():</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class='line'>    <span class="bp">self</span><span class="o">.</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class='line'>    <span class="k">return</span> <span class="bp">self</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">next</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class='line'>    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">i</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">:</span>
+</span><span class='line'>      <span class="bp">self</span><span class="o">.</span><span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span class='line'>      <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">i</span>
+</span><span class='line'>    <span class="k">else</span><span class="p">:</span>
+</span><span class='line'>      <span class="k">raise</span> <span class="ne">StopIteration</span><span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+</span><span class='line'>  <span class="n">iterator</span> <span class="o">=</span> <span class="n">Iterator</span><span class="p">()</span>
+</span><span class='line'>  <span class="k">print</span> <span class="nb">type</span><span class="p">(</span><span class="n">iterator</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">iterator</span><span class="p">:</span>
+</span><span class='line'>    <span class="k">print</span> <span class="n">i</span><span class="p">,</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+</span><span class='line'>  <span class="n">main</span><span class="p">()</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Executing this code will give us output as shown below,</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&lt;</span><span class="nb">type</span> <span class="s">&#39;instance&#39;</span><span class="o">&gt;</span>
+</span><span class='line'><span class="mi">1</span> <span class="mi">2</span> <span class="mi">3</span> <span class="mi">4</span> <span class="mi">5</span> <span class="mi">6</span> <span class="mi">7</span> <span class="mi">8</span> <span class="mi">9</span> <span class="mi">10</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><strong>Generator</strong> is a special iterator.  We will not have to write a class with these methods, instead <code>yield</code> keyword can do all the <strong>magic</strong> for us.</p>
+
+<p>Now, let us rewrite the above code with generator.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">def</span> <span class="nf">generator</span><span class="p">():</span>
+</span><span class='line'>  <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class='line'>  <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">:</span>
+</span><span class='line'>    <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span class='line'>    <span class="k">yield</span> <span class="n">i</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+</span><span class='line'>  <span class="n">gen</span> <span class="o">=</span> <span class="n">generator</span><span class="p">()</span>
+</span><span class='line'>  <span class="k">print</span> <span class="nb">type</span><span class="p">(</span><span class="n">gen</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">print</span> <span class="nb">dir</span><span class="p">(</span><span class="n">gen</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">gen</span><span class="p">:</span>
+</span><span class='line'>    <span class="k">print</span> <span class="n">i</span><span class="p">,</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+</span><span class='line'>  <span class="n">main</span><span class="p">()</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Executing this code will give us output as shown below,</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&lt;</span><span class="nb">type</span> <span class="s">&#39;generator&#39;</span><span class="o">&gt;</span>
+</span><span class='line'><span class="p">[</span><span class="s">&#39;__class__&#39;</span><span class="p">,</span> <span class="s">&#39;__delattr__&#39;</span><span class="p">,</span> <span class="s">&#39;__doc__&#39;</span><span class="p">,</span> <span class="s">&#39;__format__&#39;</span><span class="p">,</span> <span class="s">&#39;__getattribute__&#39;</span><span class="p">,</span> <span class="s">&#39;__hash__&#39;</span><span class="p">,</span> <span class="s">&#39;__init__&#39;</span><span class="p">,</span> <span class="s">&#39;__iter__&#39;</span><span class="p">,</span> <span class="s">&#39;__name__&#39;</span><span class="p">,</span> <span class="s">&#39;__new__&#39;</span><span class="p">,</span> <span class="s">&#39;__reduce__&#39;</span><span class="p">,</span> <span class="s">&#39;__reduce_ex__&#39;</span><span class="p">,</span> <span class="s">&#39;__repr__&#39;</span><span class="p">,</span> <span class="s">&#39;__setattr__&#39;</span><span class="p">,</span> <span class="s">&#39;__sizeof__&#39;</span><span class="p">,</span> <span class="s">&#39;__str__&#39;</span><span class="p">,</span> <span class="s">&#39;__subclasshook__&#39;</span><span class="p">,</span> <span class="s">&#39;close&#39;</span><span class="p">,</span> <span class="s">&#39;gi_code&#39;</span><span class="p">,</span> <span class="s">&#39;gi_frame&#39;</span><span class="p">,</span> <span class="s">&#39;gi_running&#39;</span><span class="p">,</span> <span class="s">&#39;next&#39;</span><span class="p">,</span> <span class="s">&#39;send&#39;</span><span class="p">,</span> <span class="s">&#39;throw&#39;</span><span class="p">]</span>
+</span><span class='line'><span class="mi">1</span> <span class="mi">2</span> <span class="mi">3</span> <span class="mi">4</span> <span class="mi">5</span> <span class="mi">6</span> <span class="mi">7</span> <span class="mi">8</span> <span class="mi">9</span> <span class="mi">10</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<blockquote><p>Is that all?  Is generator just another method to create iterator?</p>
+
+<p>But according to the zen of python,</p>
+
+<p><em>&ldquo;There should be one&mdash; and preferably only one &mdash;obvious way to do it.&rdquo;</em></p></blockquote>
+
+<p>Hey look, <code>dir(generator)</code> is giving something more than what we would expect from a <code>dir(function)</code>.</p>
+
+<h3>Generator is more than just an iterator</h3>
+
+<p>Let us now dwell deep into generator, for which we&rsquo;ll have to understand <code>yield</code> keyword.</p>
+
+<p><code>yield</code> as just the literal meaning &ndash; relinquishes the control temporarily.</p>
+
+<p>Whenever a generator function is called, the actual code
+inside the function does not get executed.</p>
+
+<p>For example, the same code without iterating through items of
+generator.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">def</span> <span class="nf">generator</span><span class="p">():</span>
+</span><span class='line'>  <span class="k">print</span> <span class="s">&#39;First line of generator&#39;</span>
+</span><span class='line'>  <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class='line'>  <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">:</span>
+</span><span class='line'>    <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span class='line'>    <span class="k">yield</span> <span class="n">i</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+</span><span class='line'>  <span class="k">print</span> <span class="s">&#39;Before calling generator&#39;</span>
+</span><span class='line'>  <span class="n">gen</span> <span class="o">=</span> <span class="n">generator</span><span class="p">()</span>
+</span><span class='line'>  <span class="k">print</span> <span class="s">&#39;After calling generator&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+</span><span class='line'>  <span class="n">main</span><span class="p">()</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Output of this code will look like,</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">Before</span> <span class="n">calling</span> <span class="n">generator</span>
+</span><span class='line'><span class="n">After</span> <span class="n">calling</span> <span class="n">generator</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>You can notice something.  <em>&ldquo;First line of generator&rdquo;</em> is
+not printed when generator is invoked.</p>
+
+<blockquote><p>This is how, generator is different from other functions.  Calling a generator
+function does not execute any code in the function, instead returns a generator
+object.</p>
+
+<p>So, when does actual code gets executed?</p>
+
+<p><strong>The actual code gets executed when the next() method is called.</strong></p></blockquote>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">def</span> <span class="nf">generator</span><span class="p">():</span>
+</span><span class='line'>  <span class="k">print</span> <span class="s">&#39;In generator() first line&#39;</span>
+</span><span class='line'>  <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class='line'>  <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">:</span>
+</span><span class='line'>    <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span class='line'>    <span class="k">print</span> <span class="s">&#39;In generator() before yield&#39;</span>
+</span><span class='line'>    <span class="k">yield</span> <span class="n">i</span>
+</span><span class='line'>    <span class="k">print</span> <span class="s">&#39;In generator() after yield&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+</span><span class='line'>  <span class="k">print</span> <span class="s">&#39;In main() before calling generator()&#39;</span>
+</span><span class='line'>  <span class="n">gen</span> <span class="o">=</span> <span class="n">generator</span><span class="p">()</span>
+</span><span class='line'>  <span class="k">print</span> <span class="s">&#39;In main() after calling generator()&#39;</span>
+</span><span class='line'>  <span class="k">print</span> <span class="s">&#39;In main() before calling next()&#39;</span>
+</span><span class='line'>  <span class="n">gen</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+</span><span class='line'>  <span class="k">print</span> <span class="s">&#39;In main() after calling next()&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+</span><span class='line'>  <span class="n">main</span><span class="p">()</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Output of this code will look like this,</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">In</span> <span class="n">main</span><span class="p">()</span> <span class="n">before</span> <span class="n">calling</span> <span class="n">generator</span><span class="p">()</span>
+</span><span class='line'><span class="n">In</span> <span class="n">main</span><span class="p">()</span> <span class="n">after</span> <span class="n">calling</span> <span class="n">generator</span><span class="p">()</span>
+</span><span class='line'><span class="n">In</span> <span class="n">main</span><span class="p">()</span> <span class="n">before</span> <span class="n">calling</span> <span class="nb">next</span><span class="p">()</span>
+</span><span class='line'><span class="n">In</span> <span class="n">generator</span><span class="p">()</span> <span class="n">first</span> <span class="n">line</span>
+</span><span class='line'><span class="n">In</span> <span class="n">generator</span><span class="p">()</span> <span class="n">before</span> <span class="k">yield</span>
+</span><span class='line'><span class="n">In</span> <span class="n">main</span><span class="p">()</span> <span class="n">after</span> <span class="n">calling</span> <span class="nb">next</span><span class="p">()</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<blockquote><p>It is clear from the example above, that the code inside generator
+actually gets executed when next() method is called.</p>
+
+<p>One more thing to be noticed here is, the last line of generator
+<strong>&lsquo;In generator() after yield&rsquo;</strong> is not getting printed.</p>
+
+<p>The execution resumes from this point when next() method of the generator
+object is called the next time.</p></blockquote>
+
+<p>The code snippet below explains this control flow.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">def</span> <span class="nf">generator</span><span class="p">():</span>
+</span><span class='line'>  <span class="k">print</span> <span class="s">&#39;In generator() first line&#39;</span>
+</span><span class='line'>  <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class='line'>  <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">:</span>
+</span><span class='line'>    <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span class='line'>    <span class="k">print</span> <span class="s">&#39;In generator() before yield&#39;</span>
+</span><span class='line'>    <span class="k">yield</span> <span class="n">i</span>
+</span><span class='line'>    <span class="k">print</span> <span class="s">&#39;In generator() after yield&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+</span><span class='line'>  <span class="k">print</span> <span class="s">&#39;In main() before calling generator()&#39;</span>
+</span><span class='line'>  <span class="n">gen</span> <span class="o">=</span> <span class="n">generator</span><span class="p">()</span>
+</span><span class='line'>  <span class="k">print</span> <span class="s">&#39;In main() after calling generator()&#39;</span>
+</span><span class='line'>  <span class="k">print</span> <span class="s">&#39;In main() before calling next()&#39;</span>
+</span><span class='line'>  <span class="n">gen</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+</span><span class='line'>  <span class="k">print</span> <span class="s">&#39;In main() after calling next()&#39;</span>
+</span><span class='line'>  <span class="k">print</span> <span class="s">&#39;In main() before calling next() second time&#39;</span>
+</span><span class='line'>  <span class="n">gen</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+</span><span class='line'>  <span class="k">print</span> <span class="s">&#39;In main() after calling next() second time&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+</span><span class='line'>  <span class="n">main</span><span class="p">()</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Output of this code will be,</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">In</span> <span class="n">main</span><span class="p">()</span> <span class="n">before</span> <span class="n">calling</span> <span class="n">generator</span><span class="p">()</span>
+</span><span class='line'><span class="n">In</span> <span class="n">main</span><span class="p">()</span> <span class="n">after</span> <span class="n">calling</span> <span class="n">generator</span><span class="p">()</span>
+</span><span class='line'><span class="n">In</span> <span class="n">main</span><span class="p">()</span> <span class="n">before</span> <span class="n">calling</span> <span class="nb">next</span><span class="p">()</span>
+</span><span class='line'><span class="n">In</span> <span class="n">generator</span><span class="p">()</span> <span class="n">first</span> <span class="n">line</span>
+</span><span class='line'><span class="n">In</span> <span class="n">generator</span><span class="p">()</span> <span class="n">before</span> <span class="k">yield</span>
+</span><span class='line'><span class="n">In</span> <span class="n">main</span><span class="p">()</span> <span class="n">after</span> <span class="n">calling</span> <span class="nb">next</span><span class="p">()</span>
+</span><span class='line'><span class="n">In</span> <span class="n">main</span><span class="p">()</span> <span class="n">before</span> <span class="n">calling</span> <span class="nb">next</span><span class="p">()</span> <span class="n">second</span> <span class="n">time</span>
+</span><span class='line'><span class="n">In</span> <span class="n">generator</span><span class="p">()</span> <span class="n">after</span> <span class="k">yield</span>
+</span><span class='line'><span class="n">In</span> <span class="n">generator</span><span class="p">()</span> <span class="n">before</span> <span class="k">yield</span>
+</span><span class='line'><span class="n">In</span> <span class="n">main</span><span class="p">()</span> <span class="n">after</span> <span class="n">calling</span> <span class="nb">next</span><span class="p">()</span> <span class="n">second</span> <span class="n">time</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>So, when to use generator and when to use iterable?</h3>
+
+<p>Any iterable can be replaced with a generator but converse is not true.</p>
+
+<p>Generators are preferred for two reasons,
+* When dealing with large sequence
+* When the end point of the sequence is not known beforehand</p>
+
+<p>Thats all about generators in Python.  Happy hacking.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[GCOV - Code Coverage Testing Tool]]></title>
+    <link href="http://yogeswarant.github.io/blog/2014/07/05/gcov-know-how/"/>
+    <updated>2014-07-05T08:55:49+05:30</updated>
+    <id>http://yogeswarant.github.io/blog/2014/07/05/gcov-know-how</id>
+    <content type="html"><![CDATA[<h2>What is GCOV</h2>
 
 <ul>
 <li>GCC provides GCOV, code coverage testing tool for C/C++ programs.</li>
@@ -280,74 +636,136 @@
 <li><p>If the program is a daemon, better to add <strong>exit(0) in the SIGINT and SIGTERM signal handler.</strong> to do a graceful exit.</p></li>
 <li><p>GCOV will try to create <strong>.gcda file in the same folder structure as it was compiled</strong>.
 But the problem could be when used on embedded platforms, where the filesystem is mostly readonly.
-In this case, <strong>GCOV_PREFIX</strong> enviromental variable can be used.</p>
-
-<p>&#8220;`
-yogi@u32:~/gcov_basics$ make
-gcc -fprofile-arcs -ftest-coverage -c coverage.c
-gcc -fprofile-arcs -ftest-coverage *.o -o cov</p>
-
-<p>Note: Copying the executable to /tmp folder</p>
-
-<p>yogi@u32:~/gcov_basics$ cp cov /tmp/
-yogi@u32:~/gcov_basics$ ls -l
-total 36
--rwxrwxr-x 1 yogi yogi   17295 Jun  8 07:30 cov
--rwxrwx&mdash;&ndash; 1 yogi vboxsf   131 Jun  7 15:13 coverage.c
--rw-rw-r&mdash; 1 yogi yogi     396 Jun  8 07:30 coverage.gcno
--rw-rw-r&mdash; 1 yogi yogi    1824 Jun  8 07:30 coverage.o
--rwxrwx&mdash;&ndash; 1 yogi vboxsf   286 Jun  7 16:32 Makefile
-yogi@u32:~/gcov_basics$ cd /tmp/
-yogi@u32:/tmp$ ./cov
-True
-yogi@u32:/tmp$ find . -name &ldquo;*.gcda&rdquo;</p>
-
-<p>Note: gcda file will not get created in the current working directory, instead
-will be created in the same folder structure as it got compiled.</p>
-
-<p>yogi@u32:/tmp$ cd &ndash;
-/home/yogi/gcov_basics</p>
-
-<p>Note: gcda file getting created where the code was actually compiled.</p>
-
-<p>yogi@u32:~/gcov_basics$ ls -l
-total 40
--rwxrwxr-x 1 yogi yogi   17295 Jun  8 07:30 cov
--rwxrwx&mdash;&ndash; 1 yogi vboxsf   131 Jun  7 15:13 coverage.c
--rw-rw-r&mdash; 1 yogi yogi     160 Jun  8 07:30 coverage.gcda
--rw-rw-r&mdash; 1 yogi yogi     396 Jun  8 07:30 coverage.gcno
--rw-rw-r&mdash; 1 yogi yogi    1824 Jun  8 07:30 coverage.o
--rwxrwx&mdash;&ndash; 1 yogi vboxsf   286 Jun  7 16:32 Makefile
-yogi@u32:~/gcov_basics$
-yogi@u32:~/gcov_basics$ export GCOV_PREFIX=/tmp
-yogi@u32:~/gcov_basics$ rm coverage.gcda
-yogi@u32:~/gcov_basics$ cd &ndash;
-/tmp
-yogi@u32:/tmp$ ./cov
-True</p>
-
-<p>Note: By setting GCOV_PREFIX environmental variable we&rsquo;ll be able to direct
-the files to a particular base folder.</p>
-
-<p>yogi@u32:/tmp$ ls -l /tmp/home/yogi/gcov_basics/coverage.gcda
--rw-rw-r&mdash; 1 yogi yogi 160 Jun  8 07:31 /tmp/home/yogi/gcov_basics/coverage.gcda
-&#8220;`</p></li>
-<li><p><strong>GCOV_PREFIX_STRIP</strong> environmental variable can be handy when we are not interested in complete folder structure but to remove certain part of it.
-&#8220;`
-yogi@u32:/tmp$ export GCOV_PREFIX=/tmp
-yogi@u32:/tmp$ export GCOV_PREFIX_STRIP=2
-yogi@u32:/tmp$ ./cov
-True</p>
-
-<p>Note:  Earlier .gcda file was getting created in /tmp/home/yogi/gcov_basics/ folder.
-Now by exporting GCOV_PREFIX_STRIP=2 environmental variable, will strip two levels &ndash; /home/yogi/ folder
-is stripped off and .gcda file will get create in /tmp/gcov_basics/</p>
-
-<p>yogi@u32:/tmp$ ls -l /tmp/gcov_basics/coverage.gcda
--rw-rw-r&mdash; 1 yogi yogi 160 Jun  8 07:44 /tmp/gcov_basics/coverage.gcda</p>
-
-<p>&#8220;`</p></li>
+In this case, <strong>GCOV_PREFIX</strong> environmental variable can be used.</p></li>
 </ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>yogi@u32:~/gcov_basics$ make
+</span><span class='line'>gcc -fprofile-arcs -ftest-coverage -c coverage.c
+</span><span class='line'>gcc -fprofile-arcs -ftest-coverage *.o -o cov
+</span><span class='line'>
+</span><span class='line'>Note: Copying the executable to /tmp folder
+</span><span class='line'>
+</span><span class='line'>yogi@u32:~/gcov_basics$ cp cov /tmp/
+</span><span class='line'>yogi@u32:~/gcov_basics$ ls -l
+</span><span class='line'>total 36
+</span><span class='line'>-rwxrwxr-x 1 yogi yogi   17295 Jun  8 07:30 cov
+</span><span class='line'>-rwxrwx--- 1 yogi vboxsf   131 Jun  7 15:13 coverage.c
+</span><span class='line'>-rw-rw-r-- 1 yogi yogi     396 Jun  8 07:30 coverage.gcno
+</span><span class='line'>-rw-rw-r-- 1 yogi yogi    1824 Jun  8 07:30 coverage.o
+</span><span class='line'>-rwxrwx--- 1 yogi vboxsf   286 Jun  7 16:32 Makefile
+</span><span class='line'>yogi@u32:~/gcov_basics$ cd /tmp/
+</span><span class='line'>yogi@u32:/tmp$ ./cov
+</span><span class='line'>True
+</span><span class='line'>yogi@u32:/tmp$ find . -name "*.gcda"
+</span><span class='line'>
+</span><span class='line'>Note: gcda file will not get created in the current working directory, instead
+</span><span class='line'>will be created in the same folder structure as it got compiled.
+</span><span class='line'>
+</span><span class='line'>yogi@u32:/tmp$ cd -
+</span><span class='line'>/home/yogi/gcov_basics
+</span><span class='line'>
+</span><span class='line'>Note: gcda file getting created where the code was actually compiled.
+</span><span class='line'>
+</span><span class='line'>yogi@u32:~/gcov_basics$ ls -l
+</span><span class='line'>total 40
+</span><span class='line'>-rwxrwxr-x 1 yogi yogi   17295 Jun  8 07:30 cov
+</span><span class='line'>-rwxrwx--- 1 yogi vboxsf   131 Jun  7 15:13 coverage.c
+</span><span class='line'>-rw-rw-r-- 1 yogi yogi     160 Jun  8 07:30 coverage.gcda
+</span><span class='line'>-rw-rw-r-- 1 yogi yogi     396 Jun  8 07:30 coverage.gcno
+</span><span class='line'>-rw-rw-r-- 1 yogi yogi    1824 Jun  8 07:30 coverage.o
+</span><span class='line'>-rwxrwx--- 1 yogi vboxsf   286 Jun  7 16:32 Makefile
+</span><span class='line'>yogi@u32:~/gcov_basics$
+</span><span class='line'>yogi@u32:~/gcov_basics$ export GCOV_PREFIX=/tmp
+</span><span class='line'>yogi@u32:~/gcov_basics$ rm coverage.gcda
+</span><span class='line'>yogi@u32:~/gcov_basics$ cd -
+</span><span class='line'>/tmp
+</span><span class='line'>yogi@u32:/tmp$ ./cov
+</span><span class='line'>True
+</span><span class='line'>
+</span><span class='line'>Note: By setting GCOV_PREFIX environmental variable we'll be able to direct
+</span><span class='line'>the files to a particular base folder.
+</span><span class='line'>
+</span><span class='line'>yogi@u32:/tmp$ ls -l /tmp/home/yogi/gcov_basics/coverage.gcda
+</span><span class='line'>-rw-rw-r-- 1 yogi yogi 160 Jun  8 07:31 /tmp/home/yogi/gcov_basics/coverage.gcda</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><strong>GCOV_PREFIX_STRIP</strong> environmental variable can be handy when we are not interested in complete folder structure but to remove certain part of it.</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>yogi@u32:/tmp$ export GCOV_PREFIX=/tmp
+</span><span class='line'>yogi@u32:/tmp$ export GCOV_PREFIX_STRIP=2
+</span><span class='line'>yogi@u32:/tmp$ ./cov
+</span><span class='line'>True
+</span><span class='line'>
+</span><span class='line'>Note:  Earlier .gcda file was getting created in /tmp/home/yogi/gcov_basics/ folder.
+</span><span class='line'>Now by exporting GCOV_PREFIX_STRIP=2 environmental variable, will strip two levels - /home/yogi/ folder
+</span><span class='line'>is stripped off and .gcda file will get create in /tmp/gcov_basics/
+</span><span class='line'>
+</span><span class='line'>yogi@u32:/tmp$ ls -l /tmp/gcov_basics/coverage.gcda
+</span><span class='line'>-rw-rw-r-- 1 yogi yogi 160 Jun  8 07:44 /tmp/gcov_basics/coverage.gcda
+</span></code></pre></td></tr></table></div></figure>
 
 
 <h2>FAQs</h2>
@@ -388,54 +806,92 @@ is stripped off and .gcda file will get create in /tmp/gcov_basics/</p>
 </ol>
 
 
-<p>  <code>
-  yogi@u32:~/gcov_basics$ strings cov
-  /lib/ld-linux.so.2
-  __gmon_start__
-  libc.so.6
-  _IO_stdin_used
-  puts
-  __libc_start_main
-  GLIBC_2.0
-  PTRh
-  UWVS
-  [^_]
-  True
-  False
-  ;*2$"
- </code></p>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>yogi@u32:~/gcov_basics$ strings cov
+</span><span class='line'>/lib/ld-linux.so.2
+</span><span class='line'>__gmon_start__
+</span><span class='line'>libc.so.6
+</span><span class='line'>_IO_stdin_used
+</span><span class='line'>puts
+</span><span class='line'>__libc_start_main
+</span><span class='line'>GLIBC_2.0
+</span><span class='line'>PTRh
+</span><span class='line'>UWVS
+</span><span class='line'>[^_]
+</span><span class='line'>True
+</span><span class='line'>False
+</span><span class='line'>;*2$"</span></code></pre></td></tr></table></div></figure>
+
 
 <pre><code>Binary **with gcov symbols** will look like the one shown below.
-```
-yogi@u32:~/gcov_basics$ strings cov
 </code></pre>
 
-<p>/lib/ld-linux.so.2
-<strong>gmon_start</strong>
-libc.so.6
-<em>IO_stdin_used
-&hellip;
-[^</em>]
-True
-False
-/home/yogi/gcov_basics/coverage.gcda
-profiling:%s:Version mismatch &ndash; expected %.4s got %.4s
-profiling:%s:Overflow merging
-profiling:%s:Overflow writing
-profiling:%s:Cannot create directory
-profiling:%s:Not a gcov data file
-profiling:%s:Merge mismatch for %s
-profiling:%s:Invocation mismatch &ndash; some data files may have been removed%s
-function
-summaries
-profiling:%s:Error merging
-profiling:%s:Error writing
-GCOV_PREFIX_STRIP
-GCOV_PREFIX
-profiling:%s:Skip
-profiling:%s:Cannot open
-&hellip;
-&#8220;`</p>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>yogi@u32:~/gcov_basics$ strings cov
+</span><span class='line'>/lib/ld-linux.so.2
+</span><span class='line'>__gmon_start__
+</span><span class='line'>libc.so.6
+</span><span class='line'>_IO_stdin_used
+</span><span class='line'>...
+</span><span class='line'>[^_]
+</span><span class='line'>True
+</span><span class='line'>False
+</span><span class='line'>/home/yogi/gcov_basics/coverage.gcda
+</span><span class='line'>profiling:%s:Version mismatch - expected %.4s got %.4s
+</span><span class='line'>profiling:%s:Overflow merging
+</span><span class='line'>profiling:%s:Overflow writing
+</span><span class='line'>profiling:%s:Cannot create directory
+</span><span class='line'>profiling:%s:Not a gcov data file
+</span><span class='line'>profiling:%s:Merge mismatch for %s
+</span><span class='line'>profiling:%s:Invocation mismatch - some data files may have been removed%s
+</span><span class='line'>function
+</span><span class='line'>summaries
+</span><span class='line'>profiling:%s:Error merging
+</span><span class='line'>profiling:%s:Error writing
+</span><span class='line'>GCOV_PREFIX_STRIP
+</span><span class='line'>GCOV_PREFIX
+</span><span class='line'>profiling:%s:Skip
+</span><span class='line'>profiling:%s:Cannot open
+</span><span class='line'>...</span></code></pre></td></tr></table></div></figure>
+
 
 <blockquote><p>The reason for this could be <strong>-fprofile-arcs and -ftest-coverage CFLAGS</strong> were missed during compilation.</p></blockquote>
 

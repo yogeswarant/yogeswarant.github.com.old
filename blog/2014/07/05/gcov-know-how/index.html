@@ -1,6 +1,113 @@
-<h1>GCOV &ndash; Code coverage testing tool</h1>
 
-<h2>What is GCOV</h2>
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>GCOV - Code Coverage Testing Tool - Yogi's Corner</title>
+  <meta name="author" content="Yogeswaran Thulasidoss">
+
+  
+  <meta name="description" content="What is GCOV GCC provides GCOV, code coverage testing tool for C/C++ programs.
+GCOV identifies the lines of code that got executed while running the &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://yogeswarant.github.io/blog/2014/07/05/gcov-know-how">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Yogi's Corner" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href='//fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+<link href='//fonts.googleapis.com/css?family=Fjalla+One' rel='stylesheet' type='text/css'>
+  
+
+</head>
+
+<body   class="collapse-sidebar sidebar-footer" >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Yogi's Corner</a></h1>
+  
+    <h2>random(yogi)</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+  
+  
+<ul class="subscription">
+  <li><a href="http://delicious.com/yogeswarant" rel="subscribe-delicious" title="Delicious Bookmarks">Delicious</a></li>
+</ul>
+  
+  
+  
+<ul class="subscription">
+  <li><a href="https://github.com/yogeswarant" rel="subscribe-github" title="@yogeswarant on GitHub">GitHub</a></li>
+</ul>
+  
+  
+  
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:yogeswarant.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">GCOV - Code Coverage Testing Tool</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-07-05T08:55:49+05:30" pubdate data-updated="true">Jul 5<sup>th</sup>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><h2>What is GCOV</h2>
 
 <ul>
 <li>GCC provides GCOV, code coverage testing tool for C/C++ programs.</li>
@@ -260,74 +367,136 @@
 <li><p>If the program is a daemon, better to add <strong>exit(0) in the SIGINT and SIGTERM signal handler.</strong> to do a graceful exit.</p></li>
 <li><p>GCOV will try to create <strong>.gcda file in the same folder structure as it was compiled</strong>.
 But the problem could be when used on embedded platforms, where the filesystem is mostly readonly.
-In this case, <strong>GCOV_PREFIX</strong> enviromental variable can be used.</p>
-
-<p>&#8220;`
-yogi@u32:~/gcov_basics$ make
-gcc -fprofile-arcs -ftest-coverage -c coverage.c
-gcc -fprofile-arcs -ftest-coverage *.o -o cov</p>
-
-<p>Note: Copying the executable to /tmp folder</p>
-
-<p>yogi@u32:~/gcov_basics$ cp cov /tmp/
-yogi@u32:~/gcov_basics$ ls -l
-total 36
--rwxrwxr-x 1 yogi yogi   17295 Jun  8 07:30 cov
--rwxrwx&mdash;&ndash; 1 yogi vboxsf   131 Jun  7 15:13 coverage.c
--rw-rw-r&mdash; 1 yogi yogi     396 Jun  8 07:30 coverage.gcno
--rw-rw-r&mdash; 1 yogi yogi    1824 Jun  8 07:30 coverage.o
--rwxrwx&mdash;&ndash; 1 yogi vboxsf   286 Jun  7 16:32 Makefile
-yogi@u32:~/gcov_basics$ cd /tmp/
-yogi@u32:/tmp$ ./cov
-True
-yogi@u32:/tmp$ find . -name &ldquo;*.gcda&rdquo;</p>
-
-<p>Note: gcda file will not get created in the current working directory, instead
-will be created in the same folder structure as it got compiled.</p>
-
-<p>yogi@u32:/tmp$ cd &ndash;
-/home/yogi/gcov_basics</p>
-
-<p>Note: gcda file getting created where the code was actually compiled.</p>
-
-<p>yogi@u32:~/gcov_basics$ ls -l
-total 40
--rwxrwxr-x 1 yogi yogi   17295 Jun  8 07:30 cov
--rwxrwx&mdash;&ndash; 1 yogi vboxsf   131 Jun  7 15:13 coverage.c
--rw-rw-r&mdash; 1 yogi yogi     160 Jun  8 07:30 coverage.gcda
--rw-rw-r&mdash; 1 yogi yogi     396 Jun  8 07:30 coverage.gcno
--rw-rw-r&mdash; 1 yogi yogi    1824 Jun  8 07:30 coverage.o
--rwxrwx&mdash;&ndash; 1 yogi vboxsf   286 Jun  7 16:32 Makefile
-yogi@u32:~/gcov_basics$
-yogi@u32:~/gcov_basics$ export GCOV_PREFIX=/tmp
-yogi@u32:~/gcov_basics$ rm coverage.gcda
-yogi@u32:~/gcov_basics$ cd &ndash;
-/tmp
-yogi@u32:/tmp$ ./cov
-True</p>
-
-<p>Note: By setting GCOV_PREFIX environmental variable we&rsquo;ll be able to direct
-the files to a particular base folder.</p>
-
-<p>yogi@u32:/tmp$ ls -l /tmp/home/yogi/gcov_basics/coverage.gcda
--rw-rw-r&mdash; 1 yogi yogi 160 Jun  8 07:31 /tmp/home/yogi/gcov_basics/coverage.gcda
-&#8220;`</p></li>
-<li><p><strong>GCOV_PREFIX_STRIP</strong> environmental variable can be handy when we are not interested in complete folder structure but to remove certain part of it.
-&#8220;`
-yogi@u32:/tmp$ export GCOV_PREFIX=/tmp
-yogi@u32:/tmp$ export GCOV_PREFIX_STRIP=2
-yogi@u32:/tmp$ ./cov
-True</p>
-
-<p>Note:  Earlier .gcda file was getting created in /tmp/home/yogi/gcov_basics/ folder.
-Now by exporting GCOV_PREFIX_STRIP=2 environmental variable, will strip two levels &ndash; /home/yogi/ folder
-is stripped off and .gcda file will get create in /tmp/gcov_basics/</p>
-
-<p>yogi@u32:/tmp$ ls -l /tmp/gcov_basics/coverage.gcda
--rw-rw-r&mdash; 1 yogi yogi 160 Jun  8 07:44 /tmp/gcov_basics/coverage.gcda</p>
-
-<p>&#8220;`</p></li>
+In this case, <strong>GCOV_PREFIX</strong> environmental variable can be used.</p></li>
 </ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>yogi@u32:~/gcov_basics$ make
+</span><span class='line'>gcc -fprofile-arcs -ftest-coverage -c coverage.c
+</span><span class='line'>gcc -fprofile-arcs -ftest-coverage *.o -o cov
+</span><span class='line'>
+</span><span class='line'>Note: Copying the executable to /tmp folder
+</span><span class='line'>
+</span><span class='line'>yogi@u32:~/gcov_basics$ cp cov /tmp/
+</span><span class='line'>yogi@u32:~/gcov_basics$ ls -l
+</span><span class='line'>total 36
+</span><span class='line'>-rwxrwxr-x 1 yogi yogi   17295 Jun  8 07:30 cov
+</span><span class='line'>-rwxrwx--- 1 yogi vboxsf   131 Jun  7 15:13 coverage.c
+</span><span class='line'>-rw-rw-r-- 1 yogi yogi     396 Jun  8 07:30 coverage.gcno
+</span><span class='line'>-rw-rw-r-- 1 yogi yogi    1824 Jun  8 07:30 coverage.o
+</span><span class='line'>-rwxrwx--- 1 yogi vboxsf   286 Jun  7 16:32 Makefile
+</span><span class='line'>yogi@u32:~/gcov_basics$ cd /tmp/
+</span><span class='line'>yogi@u32:/tmp$ ./cov
+</span><span class='line'>True
+</span><span class='line'>yogi@u32:/tmp$ find . -name "*.gcda"
+</span><span class='line'>
+</span><span class='line'>Note: gcda file will not get created in the current working directory, instead
+</span><span class='line'>will be created in the same folder structure as it got compiled.
+</span><span class='line'>
+</span><span class='line'>yogi@u32:/tmp$ cd -
+</span><span class='line'>/home/yogi/gcov_basics
+</span><span class='line'>
+</span><span class='line'>Note: gcda file getting created where the code was actually compiled.
+</span><span class='line'>
+</span><span class='line'>yogi@u32:~/gcov_basics$ ls -l
+</span><span class='line'>total 40
+</span><span class='line'>-rwxrwxr-x 1 yogi yogi   17295 Jun  8 07:30 cov
+</span><span class='line'>-rwxrwx--- 1 yogi vboxsf   131 Jun  7 15:13 coverage.c
+</span><span class='line'>-rw-rw-r-- 1 yogi yogi     160 Jun  8 07:30 coverage.gcda
+</span><span class='line'>-rw-rw-r-- 1 yogi yogi     396 Jun  8 07:30 coverage.gcno
+</span><span class='line'>-rw-rw-r-- 1 yogi yogi    1824 Jun  8 07:30 coverage.o
+</span><span class='line'>-rwxrwx--- 1 yogi vboxsf   286 Jun  7 16:32 Makefile
+</span><span class='line'>yogi@u32:~/gcov_basics$
+</span><span class='line'>yogi@u32:~/gcov_basics$ export GCOV_PREFIX=/tmp
+</span><span class='line'>yogi@u32:~/gcov_basics$ rm coverage.gcda
+</span><span class='line'>yogi@u32:~/gcov_basics$ cd -
+</span><span class='line'>/tmp
+</span><span class='line'>yogi@u32:/tmp$ ./cov
+</span><span class='line'>True
+</span><span class='line'>
+</span><span class='line'>Note: By setting GCOV_PREFIX environmental variable we'll be able to direct
+</span><span class='line'>the files to a particular base folder.
+</span><span class='line'>
+</span><span class='line'>yogi@u32:/tmp$ ls -l /tmp/home/yogi/gcov_basics/coverage.gcda
+</span><span class='line'>-rw-rw-r-- 1 yogi yogi 160 Jun  8 07:31 /tmp/home/yogi/gcov_basics/coverage.gcda</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><strong>GCOV_PREFIX_STRIP</strong> environmental variable can be handy when we are not interested in complete folder structure but to remove certain part of it.</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>yogi@u32:/tmp$ export GCOV_PREFIX=/tmp
+</span><span class='line'>yogi@u32:/tmp$ export GCOV_PREFIX_STRIP=2
+</span><span class='line'>yogi@u32:/tmp$ ./cov
+</span><span class='line'>True
+</span><span class='line'>
+</span><span class='line'>Note:  Earlier .gcda file was getting created in /tmp/home/yogi/gcov_basics/ folder.
+</span><span class='line'>Now by exporting GCOV_PREFIX_STRIP=2 environmental variable, will strip two levels - /home/yogi/ folder
+</span><span class='line'>is stripped off and .gcda file will get create in /tmp/gcov_basics/
+</span><span class='line'>
+</span><span class='line'>yogi@u32:/tmp$ ls -l /tmp/gcov_basics/coverage.gcda
+</span><span class='line'>-rw-rw-r-- 1 yogi yogi 160 Jun  8 07:44 /tmp/gcov_basics/coverage.gcda
+</span></code></pre></td></tr></table></div></figure>
 
 
 <h2>FAQs</h2>
@@ -368,54 +537,92 @@ is stripped off and .gcda file will get create in /tmp/gcov_basics/</p>
 </ol>
 
 
-<p>  <code>
-  yogi@u32:~/gcov_basics$ strings cov
-  /lib/ld-linux.so.2
-  __gmon_start__
-  libc.so.6
-  _IO_stdin_used
-  puts
-  __libc_start_main
-  GLIBC_2.0
-  PTRh
-  UWVS
-  [^_]
-  True
-  False
-  ;*2$"
- </code></p>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>yogi@u32:~/gcov_basics$ strings cov
+</span><span class='line'>/lib/ld-linux.so.2
+</span><span class='line'>__gmon_start__
+</span><span class='line'>libc.so.6
+</span><span class='line'>_IO_stdin_used
+</span><span class='line'>puts
+</span><span class='line'>__libc_start_main
+</span><span class='line'>GLIBC_2.0
+</span><span class='line'>PTRh
+</span><span class='line'>UWVS
+</span><span class='line'>[^_]
+</span><span class='line'>True
+</span><span class='line'>False
+</span><span class='line'>;*2$"</span></code></pre></td></tr></table></div></figure>
+
 
 <pre><code>Binary **with gcov symbols** will look like the one shown below.
-```
-yogi@u32:~/gcov_basics$ strings cov
 </code></pre>
 
-<p>/lib/ld-linux.so.2
-<strong>gmon_start</strong>
-libc.so.6
-<em>IO_stdin_used
-&hellip;
-[^</em>]
-True
-False
-/home/yogi/gcov_basics/coverage.gcda
-profiling:%s:Version mismatch &ndash; expected %.4s got %.4s
-profiling:%s:Overflow merging
-profiling:%s:Overflow writing
-profiling:%s:Cannot create directory
-profiling:%s:Not a gcov data file
-profiling:%s:Merge mismatch for %s
-profiling:%s:Invocation mismatch &ndash; some data files may have been removed%s
-function
-summaries
-profiling:%s:Error merging
-profiling:%s:Error writing
-GCOV_PREFIX_STRIP
-GCOV_PREFIX
-profiling:%s:Skip
-profiling:%s:Cannot open
-&hellip;
-&#8220;`</p>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>yogi@u32:~/gcov_basics$ strings cov
+</span><span class='line'>/lib/ld-linux.so.2
+</span><span class='line'>__gmon_start__
+</span><span class='line'>libc.so.6
+</span><span class='line'>_IO_stdin_used
+</span><span class='line'>...
+</span><span class='line'>[^_]
+</span><span class='line'>True
+</span><span class='line'>False
+</span><span class='line'>/home/yogi/gcov_basics/coverage.gcda
+</span><span class='line'>profiling:%s:Version mismatch - expected %.4s got %.4s
+</span><span class='line'>profiling:%s:Overflow merging
+</span><span class='line'>profiling:%s:Overflow writing
+</span><span class='line'>profiling:%s:Cannot create directory
+</span><span class='line'>profiling:%s:Not a gcov data file
+</span><span class='line'>profiling:%s:Merge mismatch for %s
+</span><span class='line'>profiling:%s:Invocation mismatch - some data files may have been removed%s
+</span><span class='line'>function
+</span><span class='line'>summaries
+</span><span class='line'>profiling:%s:Error merging
+</span><span class='line'>profiling:%s:Error writing
+</span><span class='line'>GCOV_PREFIX_STRIP
+</span><span class='line'>GCOV_PREFIX
+</span><span class='line'>profiling:%s:Skip
+</span><span class='line'>profiling:%s:Cannot open
+</span><span class='line'>...</span></code></pre></td></tr></table></div></figure>
+
 
 <blockquote><p>The reason for this could be <strong>-fprofile-arcs and -ftest-coverage CFLAGS</strong> were missed during compilation.</p></blockquote>
 
@@ -425,3 +632,111 @@ profiling:%s:Cannot open
 
 
 <blockquote><p>The reason could be the program did not do a graceful exit.</p></blockquote>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Authored by <span class="fn">Yogeswaran Thulasidoss</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-07-05T08:55:49+05:30" pubdate data-updated="true">Jul 5<sup>th</sup>, 2014</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/gcov/'>gcov</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://yogeswarant.github.io/blog/2014/07/05/gcov-know-how/" data-via="yogeswarant" data-counturl="http://yogeswarant.github.io/blog/2014/07/05/gcov-know-how/" >Tweet</a>
+  
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+      
+        <a class="basic-alignment right" href="/blog/2014/07/25/generators-in-python/" title="Next Post: Generators in Python">Generators in Python &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+
+</div>
+
+<aside class="sidebar">
+  
+    
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - Yogeswaran Thulasidoss -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a> | Themed with <a href="https://github.com/lucaslew/whitespace">Whitespace</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id; js.async = true;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>
