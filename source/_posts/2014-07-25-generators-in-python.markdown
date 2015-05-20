@@ -23,7 +23,7 @@ Answer: Obviously if you are going to hold the reference it is going to eat memo
 
 To understand generator we'll have to understand what is __iterator__ in python.
 
-In simple terms, __iterator__ is a object having two methods `__iter__()` and `next()`.  When iterators are using along with looping constructs like `for`, the `__iter__` and `next` methods are called implicitly.
+In simple terms, __iterator__ is a object having two methods `__iter__()` and `next()`.  When iterators are used along with looping constructs like `for`, the `__iter__` and `next` methods are called implicitly.
 You can find more information on iterators [here](https://docs.python.org/2/library/stdtypes.html#iterator-types).
 >\_\_iter__() : Returing itself
 
@@ -218,6 +218,7 @@ In main() after calling next() second time
 Any iterable can be replaced with a generator but converse is not true.
 
 Generators are preferred for two reasons,
+
 * When dealing with large sequence
 * When the end point of the sequence is not known beforehand
 
